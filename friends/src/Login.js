@@ -1,13 +1,19 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
-function Login() {
+function Login(props) {
 
   const [newFriend, setNewFriend] = useState([]);
 
   const handleSubmit = event => {
-    event.preventDefault();
     console.log(newFriend);
-  }
+    event.preventDefault();
+    axios.post('http://localhost:5000/api/login', newFriend)
+      .then(res => {
+        localStorage.setItem('token', res.data.payload )
+        props.history.push('/friends');
+      })
+    }
   
   const onValueChange = event => {
     // console.log(event.target.value);
@@ -21,18 +27,18 @@ function Login() {
     <div>
       Login test.
       <div className='login'>
-        <form onSubmit={event => handleSubmit(event)}>
+        <form onSubmit={handleSubmit}>
           <input type="text"
-          name="name"
+          name="username"
           placeholder="name" 
-          value={newFriend.name}
+          value={newFriend.username}
           onChange={event => onValueChange(event)} />
           <br />
           <input type="text"
           name="password" placeholder="password" 
           value={newFriend.password}
           onChange={event => onValueChange(event)} />
-          <button onSubmit={event => handleSubmit(event)}>Submit</button>
+          <button onSubmit={handleSubmit}>Submit</button>
         </form>
       </div>
     </div>
